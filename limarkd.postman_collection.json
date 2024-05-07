@@ -1,0 +1,1746 @@
+{
+	"info": {
+		"_postman_id": "f72d2acd-4f31-426e-8d29-e18de5cb3d13",
+		"name": "Limarkdl Shop API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28336426"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create category | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"IDEAL RESPONSE\r",
+									"{\r",
+									"    \"id\": 2,\r",
+									"    \"name\": \"TestCategoryName\",\r",
+									"    \"updatedAt\": \"2024-02-06T10:20:22.345Z\",\r",
+									"    \"createdAt\": \"2024-02-06T10:20:22.345Z\"\r",
+									"} \r",
+									"*/\r",
+									"let retrievedCategoryID_ = pm.response.json().id;\r",
+									"let requestBody_ = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"\r",
+									"pm.environment.set('env.retrieved.CategoryID', retrievedCategoryID_ );\r",
+									"console.log(retrievedCategoryID_)\r",
+									"\r",
+									"pm.test('Successful creation of collection | 200', function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Response has id | 200', function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('id');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response has name | 200', function () {\r",
+									"     var responseJSON = pm.response.json();\r",
+									"     pm.expect(responseJSON).to.be.an('object');\r",
+									"     pm.expect(responseJSON).to.have.property('name');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response has the same name as request | 200', function () {\r",
+									"     var responseJSON = pm.response.json();\r",
+									"     pm.expect(responseJSON).to.be.an('object');\r",
+									"     pm.expect(responseJSON.name).to.eql(requestBody_.name);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response has updatedAt and createdAt | 200', function () {\r",
+									"     var responseBody = pm.response.json();\r",
+									"     pm.expect(responseBody).to.be.an('object');\r",
+									"     pm.expect(responseBody).to.have.property('updatedAt');\r",
+									"     pm.expect(responseBody).to.have.property('createdAt');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// FORMATTING CASES\r",
+									"pm.test('Not able to pass empty name | ERROR 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/category/create',\r",
+									"        method: 'POST',\r",
+									"        headers: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                { \r",
+									"                    name: '' \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending empty name request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            console.log(\"Empty name request response status:\", res.status);\r",
+									"            \r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomCity}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/category/create",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"category",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete category | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"IDEAL RESPONSE\r",
+									"{\r",
+									"    OK\r",
+									"} \r",
+									"*/\r",
+									"\r",
+									"pm.test('Successful deletion of collection | PASS 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Not found not existing category and get \\'Category not found\\' | ERROR 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/category/delete?id=999999999',\r",
+									"        method: 'DELETE',\r",
+									"        headers: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending empty name request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res.text()).to.include('Category not found.');\r",
+									"            pm.expect(res).to.have.status(404);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test('Not able to pass string to categoryID | ERROR 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/category/delete?id=\\\"Test\\\"',\r",
+									"        method: 'DELETE',\r",
+									"        headers: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending empty name request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            pm.expect(res.text()).to.include('The category ID must be a valid number.');\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is text/html | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/category/delete?id={{env.retrieved.CategoryID}}",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"category",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{env.retrieved.CategoryID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "<img src=\"https://content.pstmn.io/b69a5725-1995-4000-9c4c-bdc50a444d31/aW1hZ2UucG5n\" alt=\"\" height=\"395\" width=\"633\">"
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create product | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/* \r",
+									"IDEAL RESPONSE\r",
+									"{\r",
+									"    \"id\": 4,\r",
+									"    \"name\": \"Hoodie Black\",\r",
+									"    \"description\": \"No product description\",\r",
+									"    \"price\": 99.99,\r",
+									"    \"stock\": 53,\r",
+									"    \"categoryID\": 1,\r",
+									"    \"updatedAt\": \"2024-02-06T12:14:06.903Z\",\r",
+									"    \"createdAt\": \"2024-02-06T12:14:06.903Z\"\r",
+									"} */\r",
+									"\r",
+									"let responseBody_ = pm.response.json();\r",
+									"\r",
+									"pm.environment.set('env.retrieved.ProductID', responseBody_.id)\r",
+									"\r",
+									"pm.test(\"Response status code is 200 | 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an object with id, name, description, price, stock, categoryID, updatedAt, and createdAt properties | 200\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.has.all.keys('id', 'name', 'description', 'price', 'stock', 'categoryID', 'updatedAt', 'createdAt');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'id' is a number | 200\", function () {\r",
+									"    pm.expect(responseBody_.id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'name' is a string | 200\", function () {\r",
+									"    pm.expect(responseBody_.name).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'description' is a string | 200\", function () {\r",
+									"    pm.expect(responseBody_.description).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'price' is a number | 200\", function () {\r",
+									"    pm.expect(responseBody_.price).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'stock' is a number | 200\", function () {\r",
+									"    pm.expect(responseBody_.stock).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'categoryID' is a number | 200\", function () {\r",
+									"    pm.expect(responseBody_.categoryID).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'updatedAt' is a string | 200\", function () {\r",
+									"    pm.expect(responseBody_.updatedAt).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Value of 'createdAt' is a string | 200\", function () {\r",
+									"    pm.expect(responseBody_.createdAt).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Stores the id in environment variable | 200\", function () {\r",
+									"    pm.expect(pm.environment.get('env.retrieved.ProductID')).to.exist.and.to.equal(responseBody_.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass negative price | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/create',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: -34,\r",
+									"                    stock: 56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"             pm.expect(res.text()).to.contain('The price must be a positive number.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 50);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass negative stock | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/create',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: 34,\r",
+									"                    stock: -56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"             pm.expect(res.text()).to.contain('The stock must be a positive integer.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 150);\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass empty name | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/create',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    name: \"\",\r",
+									"                    price: 34,\r",
+									"                    stock: 56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            pm.expect(res.text()).to.contain('Product name is required, must be a string, and limited to 50 characters.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 250);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass int name | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/create',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    name: 343,\r",
+									"                    price: 34,\r",
+									"                    stock: 56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            pm.expect(res.text()).to.contain('Product name is required, must be a string, and limited to 50 characters.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 250);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to add product to not-existing category | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/create',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    name: \"Testik\",\r",
+									"                    price: 34,\r",
+									"                    stock: 56,\r",
+									"                    categoryID: 0 \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            pm.expect(res.text()).to.contain('The specified category does not exist.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 250);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"price\": {{$randomPrice}},\n    \"stock\": {{$randomInt}},\n    \"categoryID\": {{env.retrieved.CategoryID}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/product/create",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"product",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*",
+									"OK 200",
+									"{",
+									"    \"id\": 11,",
+									"    \"name\": \"Unbranded Rubber Soap\",",
+									"    \"description\": \"No product description\",",
+									"    \"price\": 989.55,",
+									"    \"stock\": 717,",
+									"    \"categoryID\": 3,",
+									"    \"Category\": {",
+									"        \"id\": 3,",
+									"        \"name\": \"action-items\"",
+									"    }",
+									"}",
+									" */",
+									"",
+									"",
+									"pm.test(\"Response status code is 200 | 200\", function () {",
+									"  pm.expect(pm.response.to.have.status(200));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields | 200\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.id).to.exist;",
+									"    pm.expect(responseData.name).to.exist;",
+									"    pm.expect(responseData.description).to.exist;",
+									"    pm.expect(responseData.price).to.exist;",
+									"    pm.expect(responseData.stock).to.exist;",
+									"    pm.expect(responseData.categoryID).to.exist;",
+									"    pm.expect(responseData.Category).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Price is a non-negative number\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.price).to.be.a('number');",
+									"  pm.expect(responseData.price).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Stock is a non-negative integer | 200\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.stock).to.be.a('number');",
+									"  pm.expect(responseData.stock).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Category object is present and contains expected fields | 200\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.Category).to.exist;",
+									"  pm.expect(responseData.Category.id).to.exist;",
+									"  pm.expect(responseData.Category.name).to.exist;",
+									"});",
+									"",
+									"setTimeout(() => {",
+									"pm.test('Not-existing product\\'s request has \\'Product not found.\\' | 404 ', function (done) { ",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('env.api_url') + '/product/0',",
+									"        method: 'GET',",
+									"        header: {",
+									"            'Content-Type': 'application/json',",
+									"        },",
+									"    }, function(err, res) {",
+									"        if(err) {",
+									"            console.log(\"Error sending request:\", err);",
+									"            done(); ",
+									"        } else {",
+									"            pm.expect(res.text()).to.contain('Product not found.')",
+									"            pm.expect(res).to.have.status(404);",
+									"            done(); ",
+									"        }",
+									"    });",
+									"});",
+									"}, 50);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/product/{{env.retrieved.ProductID}}",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"product",
+								"{{env.retrieved.ProductID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"OK 200\r",
+									"OK\r",
+									" */\r",
+									"\r",
+									"pm.test('Returns 200 status code | 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Returns \\'OK\\' message | 200', function () {\r",
+									"    pm.expect(pm.response.text()).to.equal('OK');\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test('Not found not existing product and get \\'Product not found\\' | 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/delete?id=' + pm.environment.get('env.retrieved.ProductID'),\r",
+									"        method: 'DELETE',\r",
+									"        headers: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        \r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending empty name request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res.text()).to.include('Product not found.');\r",
+									"            pm.expect(res).to.have.status(404);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is text/html | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/product/delete?id={{env.retrieved.ProductID}}",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"product",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{env.retrieved.ProductID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all products | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/* \r",
+									"/product/list?categoryID=1\r",
+									"/product/list?categoryID=2\r",
+									"/product/list?categoryID=3\r",
+									"/product/list?categoryID=1&price=gte_2000\r",
+									" */\r",
+									"\r",
+									"pm.test('All products fetched succesfully | 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"    pm.expect(Array.isArray((JSON.parse(pm.response.stream.toString())))).to.be.true;\r",
+									"    \r",
+									"})\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Applying price filters | 200', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/list?categoryID=1&price=gte_20',\r",
+									"        method: 'GET',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            console.log(\"Empty name request response status:\", res.status);\r",
+									"            pm.expect(res).to.have.status(200);\r",
+									"            pm.expect(Array.isArray(JSON.parse(res.stream.toString()))).to.be.true;\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 50);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Applying price filters with extreme price and get empty array | 200', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/list?categoryID=1&price=gte_20000000',\r",
+									"        method: 'GET',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            console.log(\"Empty name request response status:\", res.status);\r",
+									"            pm.expect(res).to.have.status(200);\r",
+									"            pm.expect(JSON.parse(res.stream.toString())).to.eql([]);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 100);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Applying category filters using not-existing category | 200', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/list?categoryID=9999999',\r",
+									"        method: 'GET',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(Array.isArray(JSON.parse(res.stream.toString()))).to.be.true;\r",
+									"            pm.expect(JSON.parse(res.stream.toString())).to.eql([]);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 150);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/product/list",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"product",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200 | 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Price and stock are non-negative integers | 200\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.price).to.be.a('number').and.to.be.at.least(0);\r",
+									"  pm.expect(responseData.stock).to.be.a('number').and.to.be.at.least(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json | 200\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass negative price | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/update',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    id: pm.environment.get('env.retrieved.ProductID'),\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: -34,\r",
+									"                    stock: 56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending empty username request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            console.log(\"Empty name request response status:\", res.status);\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 50);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass string to the price | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/update',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    id: pm.environment.get('env.retrieved.ProductID'),\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: \"Something funny\",\r",
+									"                    stock: 56,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 100);\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass string to the stock | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/update',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    id: pm.environment.get('env.retrieved.ProductID'),\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: 232,\r",
+									"                    stock: \"Something sad\",\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 150);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to pass negative stock | 422', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/product/update',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                {\r",
+									"                    id: pm.environment.get('env.retrieved.ProductID'),\r",
+									"                    name: \"Really cool product\",\r",
+									"                    price: 232,\r",
+									"                    stock: -40,\r",
+									"                    categoryID: pm.environment.get('env.retrieved.CategoryID') \r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(422);\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 200);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"id\": {{env.retrieved.ProductID}},\r\n \"name\": \"{{$randomProduct}}\",\r\n \"description\": \"{{$randomJobDescriptor}}\",\r\n \"price\": {{$randomPrice}},\r\n \"stock\": {{$randomInt}},\r\n \"categoryID\": {{env.retrieved.CategoryID}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/product/update",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"product",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "<img src=\"https://content.pstmn.io/590222f0-465d-4843-b53f-70d3fe3e8fbe/aW1hZ2UucG5n\" alt=\"\" height=\"395\" width=\"633\">"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create user | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*",
+									"200 OK RESPONSE",
+									"{",
+									"    \"id\": 1,",
+									"    \"username\": \"testUserAPI\",",
+									"    \"accountBalance\": 5000,",
+									"    \"updatedAt\": \"2024-02-06T12:25:27.199Z\",",
+									"    \"createdAt\": \"2024-02-06T12:25:27.199Z\"",
+									"}",
+									" */",
+									"",
+									"/* ",
+									"    username: [a-zA-Z0-9_]",
+									"    accountBalance: ^[0-9]{2,10}$",
+									" */",
+									"",
+									"let responseBodyText = pm.response.text();",
+									"",
+									"",
+									"if (responseBodyText.includes('A user with this username already exists.')) {",
+									"    throw new Error('Test user already exists. Check .env variables')",
+									"} else {",
+									"    testIfUserNotExists();",
+									"}",
+									"",
+									"",
+									"",
+									"",
+									"function testIfUserNotExists () {",
+									"",
+									"let responseBody_ =  pm.response.json();",
+									"let requestBody_ = JSON.parse(pm.request.body.raw);",
+									"",
+									"pm.environment.set('env.retrieved.UserID', responseBody_.id);",
+									"console.log(responseBody_);",
+									"pm.environment.set('env.retrieved.UserID', responseBody_.id);",
+									"console.log(pm.environment.get('env.retrieved.UserID'));",
+									"retrievedUserID = pm.environment.get('env.retrieved.UserID');",
+									"",
+									"    pm.test('Successful creation of user | PASS 200', function () {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"})",
+									"",
+									"pm.test('Response has id | PASS 200', function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Response has username | PASS 200', function () {",
+									"     var responseJSON = pm.response.json();",
+									"     pm.expect(responseJSON).to.be.an('object');",
+									"     pm.expect(responseJSON).to.have.property('username');",
+									"});",
+									"",
+									"pm.test('Response has accountBalance | PASS 200', function () {",
+									"     var responseJSON = pm.response.json();",
+									"     pm.expect(responseJSON).to.be.an('object');",
+									"     pm.expect(responseJSON).to.have.property('accountBalance');",
+									"});",
+									"",
+									"pm.test('Response has the same username as request | PASS 200', function () {",
+									"     var responseJSON = pm.response.json();",
+									"     console.log(requestBody_);",
+									"     console.log(responseJSON);",
+									"     pm.expect(responseJSON).to.be.an('object');",
+									"     pm.expect(responseJSON.username).to.eql(requestBody_.username);",
+									"});",
+									"",
+									"pm.test('Response has updatedAt and createdAt | PASS 200', function () {",
+									"     var responseBody = pm.response.json();",
+									"     pm.expect(responseBody).to.be.an('object');",
+									"     pm.expect(responseBody).to.have.property('updatedAt');",
+									"     pm.expect(responseBody).to.have.property('createdAt');",
+									"});",
+									"",
+									"",
+									"// FORMATTING CASES",
+									"setTimeout(() => {",
+									"pm.test('Not able to pass empty username | ERROR 422', function (done) { ",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('env.api_url') + '/user/create',",
+									"        method: 'POST',",
+									"        header: {",
+									"            'Content-Type': 'application/json',",
+									"        },",
+									"        body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                { ",
+									"                    username: '',",
+									"                    accountBalance: 4000",
+									"                }",
+									"                )",
+									"        }",
+									"    }, function(err, res) {",
+									"        if(err) {",
+									"            console.log(\"Error sending empty username request:\", err);",
+									"            done(); ",
+									"        } else {",
+									"            console.log(\"Empty name request response status:\", res.status);",
+									"            pm.expect(res).to.have.status(422);",
+									"            done(); ",
+									"        }",
+									"    });",
+									"});",
+									"}, 50);",
+									"",
+									"setTimeout(() => {",
+									"pm.test('Not able to pass negative accountBalance | ERROR 422', function (done) { ",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('env.api_url') + '/user/create',",
+									"        method: 'POST',",
+									"        header: {",
+									"            'Content-Type': 'application/json',",
+									"        },",
+									"        body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                { ",
+									"                    username: 'testUserAPI1337',",
+									"                    accountBalance: -500",
+									"                }",
+									"                )",
+									"        }",
+									"    }, function(err, res) {",
+									"        if(err) {",
+									"            console.log(\"Error sending negative accountBalance request:\", err);",
+									"            done(); ",
+									"        } else {",
+									"            console.log(\"Negative accountBalance request response status:\", res.status);",
+									"            pm.expect(res).to.have.status(422);",
+									"            done(); ",
+									"        }",
+									"    });",
+									"});",
+									"",
+									"}, 100);",
+									"",
+									"setTimeout(() => {",
+									"pm.test('User already exists | ERROR 422', function (done) { ",
+									"    let username_ = pm.request.username;",
+									"    let accountBalance_ = pm.environment.get('env.env.accountBalance');",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('env.api_url') + '/user/create',",
+									"        method: 'POST',",
+									"        headers: {",
+									"            'Content-Type': 'application/json',",
+									"        },",
+									"        body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                { ",
+									"                    username: username_,",
+									"                    accountBalance: accountBalance_",
+									"                }",
+									"                )",
+									"        }",
+									"    }, function(err, res) {",
+									"        if(err) {",
+									"            console.log(\"Error sending already existing user request:\", err);",
+									"            done(); ",
+									"        } else {",
+									"            console.log(\"Already existing user request response status:\", res.status);",
+									"            pm.expect(res).to.have.status(422);",
+									"            done(); ",
+									"        }",
+									"    });",
+									"});",
+									"",
+									"}, 150);",
+									"",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('userID_Generated_Test')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{$randomLastName}}{{$randomFirstName}}{{$randomInt}}\",\n  \"accountBalance\": {{$randomInt}}\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/user/create",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Successful deletetion', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"})",
+									"",
+									"pm.test('Text of message is \\'OK\\'', function () {",
+									"    pm.expect(pm.response.text()).to.equal('OK');",
+									"})",
+									"",
+									"userIDToDelete = Number(pm.environment.get('env.retrieved.UserID'));",
+									"",
+									"setTimeout(() => {",
+									"pm.test('Not able to delete not existing user | ERROR 404', function (done) { ",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('env.api_url') + '/user/delete',",
+									"        method: 'DELETE',",
+									"        header: {",
+									"            'Content-Type': 'application/json',",
+									"        },",
+									"        body: {",
+									"            mode: 'raw',",
+									"            raw: JSON.stringify(",
+									"                { ",
+									"                    id: pm.environment.get('env.retrieved.UserID'),",
+									"                }",
+									"                )",
+									"        }",
+									"    }, function(err, res) {",
+									"        if(err) {",
+									"            console.log(\"Error sending empty username request:\", err);",
+									"            done(); ",
+									"        } else {",
+									"            pm.expect(res).to.have.status(404);",
+									"            pm.test('Get message \\'User not found.\\'', function () {",
+									"                pm.expect(res.text()).to.equal('User not found.')",
+									"            })",
+									"            ",
+									"            done(); ",
+									"        }",
+									"    });",
+									"});",
+									"}, 50);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{env.retrieved.UserID}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/user/delete",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Verify that the response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.id).to.exist;",
+									"    pm.expect(responseData.username).to.exist;",
+									"    pm.expect(responseData.accountBalance).to.exist;",
+									"    pm.expect(responseData.createdAt).to.exist;",
+									"    pm.expect(responseData.updatedAt).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that the id is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.id).to.be.a('number', 'id should be a number');",
+									"    pm.expect(responseData.id).to.be.at.least(0, 'id should be a non-negative integer');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Username is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.username).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Username should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that the accountBalance is a non-negative number\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.accountBalance).to.be.a('number').and.to.be.at.least(0, \"Value should be non-negative\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/user/{{env.retrieved.UserID}}",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"{{env.retrieved.UserID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all users | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('array');",
+									"",
+									"    responseData.forEach(function(user){",
+									"        pm.expect(user).to.have.property('id');",
+									"        pm.expect(user).to.have.property('username');",
+									"        pm.expect(user).to.have.property('accountBalance');",
+									"        pm.expect(user).to.have.property('createdAt');",
+									"        pm.expect(user).to.have.property('updatedAt');",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that the 'id' is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('array');",
+									"    responseData.forEach(function(user) {",
+									"        pm.expect(user.id).to.be.a('number');",
+									"        pm.expect(user.id).to.be.at.least(0);",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that the username is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('array');",
+									"    responseData.forEach(function(user) {",
+									"        pm.expect(user.username).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Username should not be empty\");",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that accountBalance is a non-negative number\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('array');",
+									"    responseData.forEach(function(user) {",
+									"        pm.expect(user.accountBalance).to.be.a('number');",
+									"        pm.expect(user.accountBalance).to.be.at.least(0);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{env.api_url}}/user/list",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add product to user's cart | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test('Successful adding product to the user\\'s cart', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Product not found | ERROR 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/user/addToCart',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                { \r",
+									"                    userID: pm.environment.get('env.retrieved.UserID'),\r",
+									"                    productID: 4000\r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(404);\r",
+									"            pm.expect(res.text()).to.equal('Product not found.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 50);\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('User not found | ERROR 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/user/addToCart',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                { \r",
+									"                    userID: -2,\r",
+									"                    productID: pm.environment.get('env.retrieved.ProductID')\r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.expect(res).to.have.status(404);\r",
+									"            pm.expect(res.text()).to.equal('User not found.')\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 150);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userID\": {{env.retrieved.UserID}},\n    \"productID\": {{env.retrieved.ProductID}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/user/addToCart",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"addToCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user's cart | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - cartID, userID, and productIDs | 200\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('cartID');",
+									"    pm.expect(responseData).to.have.property('userID');",
+									"    pm.expect(responseData).to.have.property('productIDs');",
+									"});",
+									"",
+									"",
+									"pm.test(\"UserID is a non-negative integer | 200\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.userID).to.be.a('number');",
+									"  pm.expect(responseData.userID).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"ProductIDs is an array with at least one element | 200\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.productIDs).to.be.an('array').and.to.have.lengthOf.at.least(1, \"ProductIDs should have at least one element\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Verify that the productIDs array contains valid product IDs | 200\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.productIDs).to.be.an('array');",
+									"    ",
+									"    responseData.productIDs.forEach(function(productID) {",
+									"        pm.expect(productID).to.be.a('number');",
+									"        pm.expect(productID).to.be.above(0);",
+									"    });",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env.api_url}}/user/getCart?userID={{env.retrieved.UserID}}",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"getCart"
+							],
+							"query": [
+								{
+									"key": "userID",
+									"value": "{{env.retrieved.UserID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from user's cart | Done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"\r",
+									"OK\r",
+									"\r",
+									" */\r",
+									"\r",
+									"\r",
+									"pm.test(\"Successful deletion of product from user's cart\", function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to delete non-existing product in the user\\'s cart | 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/user/removeFromCart',\r",
+									"        method: 'DELETE',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                { \r",
+									"                    userID: parseInt(pm.environment.get('env.retrieved.UserID')),\r",
+									"                    productID: pm.environment.get('env.retrieved.ProductID')\r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending test request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            pm.test(\"Non-existing product in the cart | 404 \", function () {\r",
+									"                pm.expect(res).to.have.status(404);\r",
+									"            })\r",
+									"            pm.test(\"Error message for 404 \\'The product is not in the user’s cart.\\' \", function () {\r",
+									"            pm.expect(res.text()).to.equal('The product is not in the user’s cart.')\r",
+									"            })\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 500);\r",
+									"\r",
+									"\r",
+									"setTimeout(() => {\r",
+									"pm.test('Not able to delete product in a non-existing user\\'s cart | 404', function (done) { \r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('env.api_url') + '/user/removeFromCart',\r",
+									"        method: 'DELETE',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify(\r",
+									"                { \r",
+									"                    userID: -2,\r",
+									"                    productID: pm.environment.get('env.retrieved.ProductID')\r",
+									"                }\r",
+									"                )\r",
+									"        }\r",
+									"    }, function(err, res) {\r",
+									"        if(err) {\r",
+									"            console.log(\"Error sending test request:\", err);\r",
+									"            done(); \r",
+									"        } else {\r",
+									"            \r",
+									"            pm.test(\"Error message for 404 \\'The product is not in the user’s cart.\\' \", function () {\r",
+									"            pm.expect(res.text()).to.equal('User not found.')\r",
+									"            })\r",
+									"            done(); \r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									"}, 500);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": {{env.retrieved.UserID}},\r\n    \"productID\": {{env.retrieved.ProductID}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env.api_url}}/user/removeFromCart",
+							"host": [
+								"{{env.api_url}}"
+							],
+							"path": [
+								"user",
+								"removeFromCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase user's cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "<img src=\"https://content.pstmn.io/adc90ecc-e18b-4185-9233-410309dbb1f5/aW1hZ2UucG5n\" alt=\"\" height=\"395\" width=\"633\">"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
